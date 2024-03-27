@@ -17,7 +17,7 @@ const Tab = createMaterialBottomTabNavigator();
 const BottomTabs = () => {
   const { theme } = useTheme();
   return (
-    <NavigationContainer>
+    <>
       <StatusBar style="light" />
       <SafeAreaView style={{ backgroundColor: "#fff" }} />
       <Tab.Navigator
@@ -74,7 +74,7 @@ const BottomTabs = () => {
           }}
         />
       </Tab.Navigator>
-    </NavigationContainer>
+    </>
   );
 };
 

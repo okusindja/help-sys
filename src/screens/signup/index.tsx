@@ -10,14 +10,14 @@ import React, { useState } from "react";
 import useAuth from "../../hooks/use-auth";
 import { useNavigation } from "@react-navigation/native";
 
-const Login = () => {
-  const { login, loading } = useAuth();
+const Signup = () => {
+  const { createUser, loading } = useAuth();
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   return (
     <View>
-      <Text>Login</Text>
+      <Text>Criar conta</Text>
       <TextInput
         style={styles.input}
         onChangeText={(text) => setEmail(text)}
@@ -30,21 +30,24 @@ const Login = () => {
         value={password}
         placeholder="Password"
       />
-      <Pressable style={styles.button} onPress={() => login(email, password)}>
+      <Pressable
+        style={styles.button}
+        onPress={() => createUser(email, password)}
+      >
         {loading ? (
           <ActivityIndicator />
         ) : (
-          <Text style={styles.buttonText}>Entrar</Text>
+          <Text style={styles.buttonText}>Criar conta</Text>
         )}
       </Pressable>
-      <Pressable onPress={() => navigation.navigate("Signup")}>
-        <Text>Não tenho conta. Criar conta</Text>
+      <Pressable onPress={() => navigation.navigate("Login")}>
+        <Text>Já tenho uma conta. Fazer login</Text>
       </Pressable>
     </View>
   );
 };
 
-export default Login;
+export default Signup;
 
 const styles = StyleSheet.create({
   input: {
