@@ -1,7 +1,9 @@
-import { View, Text, StyleSheet, Pressable, Modal, TextInput,Button, } from "react-native";
+import { View, Text, StyleSheet, Pressable, Modal, TextInput,Button, ActivityIndicator, ScrollView, } from "react-native";
 import { useState } from "react";
 import React from "react";
 import { Colors } from "react-native/Libraries/NewAppScreen";
+import { useQuery } from "@apollo/client";
+import { GET_COURSES } from "../../graphql/cursos";
 
 
 const Home = () => {
@@ -9,13 +11,22 @@ const Home = () => {
     const [isPsicologicVisible, setPsicologicVisible ]= useState(false)
     const [isFinanceVisible, setFinanceVisible] =useState(false)
     const [userInfo, setUserInfo]= useState(false)
+    const { data, loading, error } = useQuery(GET_COURSES)
 
+    if(loading) return <ActivityIndicator />
+    if(error) return <Text>Ocorreu um erro</Text>
+
+    const cursos = data.cursos;
+
+    console.log('Dados', cursos)
   return (
+    <ScrollView>
+      <View style={styles.container}>
+      {cursos.map((curso) => (
+        <Text>{curso.nome}</Text>
+      ))}
 
-
-    <View style={styles.container} >
-
-       <Pressable onPress={()=>setPsicologicVisible(true)}> 
+       <Pressable onPress={()=>setPsicologicVisible(true)}>
             <View style={styles.boxe}>
                 <Text style={styles.textos}>Dados Psicologicos</Text>
             </View>
@@ -75,7 +86,8 @@ const Home = () => {
               </View>
             </View>
         </Modal>
-    </View>
+        </View>
+    </ScrollView>
   );
 };
 
