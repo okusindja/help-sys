@@ -9,12 +9,16 @@ import {
 import React, { useState } from "react";
 import useAuth from "../../hooks/use-auth";
 import { useNavigation } from "@react-navigation/native";
+import { useQuery } from "@apollo/client";
+import { GET_COURSES } from "../../graphql/cursos";
+import { StackTypes } from "../../routes/routes.types";
 
 const Login = () => {
   const { login, loading } = useAuth();
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackTypes>();
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState("");    
+
   return (
     <View>
       <Text>Login</Text>

@@ -91,7 +91,6 @@ const useAuth = () => {
       await signOut(auth);
       await AsyncStorage.removeItem("userToken");
       setToken(null);
-      console.log("User signed out, token removed.", token);
     } catch (error) {
       console.error(error);
     } finally {

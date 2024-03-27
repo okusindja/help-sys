@@ -6,6 +6,8 @@ type StackNavigatorProps = {
   NotificationStack: undefined;
   UserStack: undefined;
   LoginStack: undefined;
+  Login: undefined;
+  Signup: undefined;
 };
 
 export type StackTypes = NativeStackNavigationProp<StackNavigatorProps>;
