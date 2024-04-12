@@ -1,5 +1,6 @@
-import { View, Text, StyleSheet, Pressable, Modal, TextInput,Button, ActivityIndicator, ScrollView, } from "react-native";
+import { View, Text, StyleSheet, Pressable, Modal, TextInput,Button, ActivityIndicator, ScrollView,  } from "react-native";
 import { useState } from "react";
+import { Picker } from "@react-native-picker/picker";
 import React from "react";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { useQuery } from "@apollo/client";
@@ -10,8 +11,19 @@ const Home = () => {
 
     const [isPsicologicVisible, setPsicologicVisible ]= useState(false)
     const [isFinanceVisible, setFinanceVisible] =useState(false)
-    const [userInfo, setUserInfo]= useState(false)
+    const [isSocialVisible, setSocialVisible]= useState(false)
     const { data, loading, error } = useQuery(GET_COURSES)
+    const [isPressao, setPressao]=useState(0)
+    const [isStress, setStress]=useState(0)
+    const [isEmprego, setEmprego]=useState(0)
+    const [isFinanca, setFinanca]=useState(0)
+    const [isApoio, setApoio]=useState(0)
+    const [isDificult, setDificult]=useState(0)
+    const [isDistance, setDistance]=useState(1)
+
+
+
+
 
     if(loading) return <ActivityIndicator />
     if(error) return <Text>Ocorreu um erro</Text>
@@ -22,9 +34,12 @@ const Home = () => {
   return (
     <ScrollView>
       <View style={styles.container}>
-      {cursos.map((curso) => (
+      {
+      /*cursos.map((curso) => (
         <Text>{curso.nome}</Text>
-      ))}
+      ))
+      */
+      }
 
        <Pressable onPress={()=>setPsicologicVisible(true)}>
             <View style={styles.boxe}>
@@ -37,7 +52,7 @@ const Home = () => {
               <Text style={styles.textos}>Dados Financeiros</Text>
           </View >
         </Pressable>
-        <Pressable >
+        <Pressable  onPress={()=>setSocialVisible(true)}>
             <View style={styles.boxe3}>
                 <Text style={styles.textos}>Dados Sociais</Text>
             </View>
@@ -50,11 +65,20 @@ const Home = () => {
                 <View>
                         <View style={styles.inputs}>
                           <Text>Pressao</Text>
-                          <TextInput style={styles.input}></TextInput>
+                          <Picker selectedValue={isPressao} onValueChange={(itemValue, itemIndex)=>setPressao(itemValue)}  style={styles.input}>
+                            <Picker.Item label="Entre 80PA e 120PA" value={1}></Picker.Item>
+                            <Picker.Item label="Maior que 120PA" value={0}></Picker.Item>
+                          </Picker>
                           <Text>Estresse</Text>
-                          <TextInput style={styles.input}></TextInput>
+                          <Picker selectedValue={isStress} onValueChange={(itemValue, itemIndex)=>setStress(itemValue)} style={styles.input}>
+                            <Picker.Item label="Sim" value={1}></Picker.Item>
+                            <Picker.Item label="Nao" value={0}></Picker.Item>
+                          </Picker>
                           <Text>Apoio Emocional</Text>
-                          <TextInput style={styles.input}></TextInput>
+                          <Picker selectedValue={isApoio} onValueChange={(itemValue, itemIndex)=>setApoio(itemValue)} style={styles.input}>
+                            <Picker.Item label="Sim" value={1}></Picker.Item>
+                            <Picker.Item label="Nao" value={0}></Picker.Item>
+                          </Picker>
                         </View>
                       <Pressable style={styles.button} onPress={()=>setPsicologicVisible(false)}>
                               <Text style={{color:'#fff'}}>Adicionar</Text> 
@@ -72,13 +96,46 @@ const Home = () => {
                 <View>
                         <View style={styles.inputs}>
                           <Text>É empregado?</Text>
-                          <TextInput style={styles.input}></TextInput>
-                          <Text>Recebe Apoio Fianceiro?</Text>
-                          <TextInput style={styles.input}></TextInput>
+                          <Picker selectedValue={isEmprego} onValueChange={(itemValue, itemIndex)=>setEmprego(itemValue)} style={styles.input} >
+                            <Picker.Item label="Sim" value={1}></Picker.Item>
+                            <Picker.Item label="Nao" value={0}></Picker.Item>
+                          </Picker>
+                          <Text >Recebe Apoio Fianceiro?</Text>
+                          <Picker selectedValue={isFinanca} onValueChange={(itemValue, itemIndex)=>setFinanca(itemValue)} style={styles.input}>
+                            <Picker.Item label="Sim" value={1}></Picker.Item>
+                            <Picker.Item label="Nao" value={0}></Picker.Item>
+                          </Picker>
                           <Text>Enfrenta Dificuldades Financeiras?</Text>
-                          <TextInput style={styles.input}></TextInput>
+                          <Picker selectedValue={isDificult} onValueChange={(itemValue, itemIndex)=>setDificult(itemValue)} style={styles.input}>
+                            <Picker.Item label="Sim" value={1}></Picker.Item>
+                            <Picker.Item label="Nao" value={0}></Picker.Item>
+                          </Picker>
                         </View>
                       <Pressable style={styles.button} onPress={()=>setFinanceVisible(false)}>
+                              <Text style={{color:'#fff'}}>Adicionar</Text> 
+                      </Pressable>
+                      
+                </View>
+              </View>
+            </View>
+        </Modal>
+
+        <Modal  animationType="slide" transparent={true} visible={isSocialVisible} onRequestClose={()=> setSocialVisible(false)}>
+          <View style={styles.overlay}>  
+            <View style={styles.Modal1} >
+                <Text style={styles.titleModal}>Dados Sociais</Text>
+                <View>
+                        <View style={styles.inputs}>
+                          <Text>Quão distante vive da universidade</Text>
+                          <Picker selectedValue={isDistance} onValueChange={(itemValue, itemIndex)=>setDistance(itemValue)} style={styles.input}>
+                            <Picker.Item label="Muito Proximo" value={1}></Picker.Item>
+                            <Picker.Item label="Proximo" value={2}></Picker.Item>
+                            <Picker.Item label="Razoavel" value={3}></Picker.Item>
+                            <Picker.Item label="Distante" value={4}></Picker.Item>
+                            <Picker.Item label="Muito Distante" value={5}></Picker.Item>
+                          </Picker>
+                        </View>
+                      <Pressable style={styles.button} onPress={()=>setSocialVisible(false)}>
                               <Text style={{color:'#fff'}}>Adicionar</Text> 
                       </Pressable>
                       
@@ -164,6 +221,7 @@ const styles = StyleSheet.create({
     borderWidth:1.3,
     borderRadius:2,
     borderColor:'#E9E9E9',
+    backgroundColor:'#E9E9E9'
     
   },
     inputs:{
