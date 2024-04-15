@@ -32,7 +32,7 @@ const Home = () => {
 
     console.log('Dados', cursos)
   return (
-    <ScrollView>
+  
       <View style={styles.container}>
       {
       /*cursos.map((curso) => (
@@ -144,7 +144,7 @@ const Home = () => {
             </View>
         </Modal>
         </View>
-    </ScrollView>
+    
   );
 };
 
