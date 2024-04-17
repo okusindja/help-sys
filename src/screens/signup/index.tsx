@@ -17,6 +17,8 @@ import { StackTypes } from "../../routes/routes.types";
 import { Picker } from "@react-native-picker/picker";
 import { CURSOS } from "../../constants";
 import { scale } from "react-native-size-matters";
+import Input from "../../components/input";
+import PickerInput from "../../components/picker-input";
 const Signup = () => {
   const { createUser, loading } = useAuth();
   const navigation = useNavigation<StackTypes>();
@@ -48,7 +50,7 @@ const Signup = () => {
   }, [generoValue]);
 
   useEffect(() => {
-    setCurso(CURSOS[cursoValue - 1]);
+    setCurso(CURSOS[cursoValue - 1].label);
   }, [cursoValue]);
 
   const [createAluno, { data, loading: createAlunoLoading }] = useMutation(
@@ -56,127 +58,65 @@ const Signup = () => {
     {
       variables: {
         nome: nome,
-        matricula: matriculaNum,
-        idade: idadeNum,
-        generos: genero,
-        // curso: curso,
+        curso: curso,
         authId: authId,
+        generos: genero,
+        idade: idadeNum,
+        matricula: matriculaNum,
       },
     }
   );
 
   return (
     <View>
-      <TextInput
-        style={styles.input}
+      <Input
         onChangeText={(text) => setEmail(text)}
-        value={email}
+        textValue={email}
         placeholder="Email"
       />
-      <TextInput
-        style={styles.input}
+      <Input
         onChangeText={(text) => setPassword(text)}
-        value={password}
+        textValue={password}
         placeholder="Password"
       />
-      <TextInput
-        style={styles.input}
+      <Input
         onChangeText={(text) => setNome(text)}
-        value={nome}
+        textValue={nome}
         placeholder="Nome"
       />
-      <TextInput
-        style={styles.input}
+      <Input
         onChangeText={(text) => setMatricula(text)}
-        value={matricula}
+        textValue={matricula}
         placeholder="Matricula"
       />
-      <TextInput
-        style={styles.input}
+      <Input
         onChangeText={(text) => setIdade(text)}
-        value={idade}
+        textValue={idade}
         placeholder="Idade"
       />
-      {Platform.OS === "android" ? (
-        <>
-         <Picker
-          style={styles.pickerStyle}
-          selectedValue={generoValue}
-          mode="dialog"
-          onValueChange={(itemValue, itemIndex) => {
-            setGeneroValue(itemValue), setToggleGenero(false);
-          }}
-        >
-          <Picker.Item
-            label="Masculino"
-            value={1}
-            style={styles.input}
-          ></Picker.Item>
-          <Picker.Item label="Feminino" value={2}></Picker.Item>
-        </Picker>
-        <Picker
-          style={styles.pickerStyle}
-          mode="dialog"
-          selectedValue={cursoValue}
-          onValueChange={(itemValue, itemIndex) => {
-            setCursoValue(itemValue), setToggleCurso(false);
-          }}
-        >
-          {CURSOS.map((curso, index) => (
-            <Picker.Item key={index} label={curso} value={index + 1} />
-          ))}
-        </Picker>
-        </>
-      ) : (
-        <>
-<TextInput
-        value={genero}
-        editable={false}
+      <PickerInput
+        textValue={genero}
         placeholder="Genero"
-        style={styles.input}
-        onChangeText={(text) => setIdade(text)}
-        onPressIn={() => setToggleGenero(!toggleGenero)}
+        selectedValue={generoValue}
+        onChangeText={(text) => setGenero(text)}
+        items={[
+          { label: "Feminino", selectedValue: 2 },
+          { label: "Masculino", selectedValue: 1 },
+        ]}
+        onChange={(itemValue, itemIndex) => {
+          setGeneroValue(itemValue), setToggleGenero(false);
+        }}
       />
-      {toggleGenero && (
-        <Picker
-          style={styles.pickerStyle}
-          selectedValue={generoValue}
-          mode="dialog"
-          onValueChange={(itemValue, itemIndex) => {
-            setGeneroValue(itemValue), setToggleGenero(false);
-          }}
-        >
-          <Picker.Item
-            label="Masculino"
-            value={1}
-            style={styles.input}
-          ></Picker.Item>
-          <Picker.Item label="Feminino" value={2}></Picker.Item>
-        </Picker>
-      )}
-      <TextInput
-        value={curso}
-        editable={false}
-        placeholder="Curso"
-        style={styles.input}
-        onPressIn={() => setToggleCurso(!toggleCurso)}
+      <PickerInput
+        items={CURSOS}
+        textValue={curso}
+        placeholder="Cursos"
+        selectedValue={cursoValue}
+        onChangeText={(text) => setCurso(text)}
+        onChange={(itemValue, itemIndex) => {
+          setCursoValue(itemValue), setToggleCurso(false);
+        }}
       />
-      {toggleCurso && (
-        <Picker
-          style={styles.pickerStyle}
-          mode="dialog"
-          selectedValue={cursoValue}
-          onValueChange={(itemValue, itemIndex) => {
-            setCursoValue(itemValue), setToggleCurso(false);
-          }}
-        >
-          {CURSOS.map((curso, index) => (
-            <Picker.Item key={index} label={curso} value={index + 1} />
-          ))}
-        </Picker>
-      )}
-      </>
-      )}
       <Pressable
         style={styles.button}
         onPress={() => {
