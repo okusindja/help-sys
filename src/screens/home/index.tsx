@@ -14,25 +14,25 @@ const Home = () => {
   const { data, loading, error } = useQuery(GET_COURSES);
   const [isPressao, setPressao] = useState(0);
   const [pressaoValue, setPressaoValue] = useState(1);
-  const [pressaoText, setPressaoText] = useState("");
+  const [pressaoText, setPressaoText] = useState("Entre 80PA e 120PA");
   const [isStress, setStress] = useState(0);
   const [stressValue, setStressValue] = useState(1);
-  const [stressText, setStressText] = useState("");
+  const [stressText, setStressText] = useState("Não");
   const [isEmprego, setEmprego] = useState(0);
   const [empregoValue, setEmpregoValue] = useState(1);
-  const [empregoText, setEmpregoText] = useState("");
+  const [empregoText, setEmpregoText] = useState("Não");
   const [isFinanca, setFinanca] = useState(0);
   const [financaValue, setFinancaValue] = useState(1);
-  const [financaText, setFinancaText] = useState("");
+  const [financaText, setFinancaText] = useState("Não");
   const [isApoio, setApoio] = useState(0);
   const [apoioValue, setApoioValue] = useState(1);
-  const [apoioText, setApoioText] = useState("");
+  const [apoioText, setApoioText] = useState("Não");
   const [isDificult, setDificult] = useState(0);
   const [dificultValue, setDificultValue] = useState(1);
-  const [dificultText, setDificultText] = useState("");
+  const [dificultText, setDificultText] = useState("Não");
   const [isDistance, setDistance] = useState(1);
   const [distanceValue, setDistanceValue] = useState(1);
-  const [distanceText, setDistanceText] = useState("");
+  const [distanceText, setDistanceText] = useState("Muito Proximo");
 
   const pressao = [
     {
@@ -124,7 +124,9 @@ const Home = () => {
   ];
 
   useEffect(() => {
+     if (pressaoValue > 0 && pressaoValue <= pressao.length) {
     setPressaoText(pressao[pressaoValue - 1].label);
+     }
   }, [pressaoValue]);
 
   useEffect(() => {
