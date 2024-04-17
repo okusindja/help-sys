@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius:12,
     borderColor:'#C3C3C3',
+    paddingLeft:12
   },
   button: {
     alignItems: "center",
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
     borderRadius:12,
   },
   buttonText: {
-    color: "white",
+    color: "black",
     margin: 12,
   },
   Tela: {
@@ -81,9 +82,9 @@ const styles = StyleSheet.create({
     fontSize:15,
   },
   RegText:{
-    color:'#FFC423',
-    left:79,
-    top:12,
+    color:'black',
+    width: '100%',
+    textAlign:'center',
     textDecorationColor:'',
   }
 });
