@@ -6,7 +6,7 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useAuth from "../../hooks/use-auth";
 import { useNavigation } from "@react-navigation/native";
 import { useMutation } from "@apollo/client";
@@ -14,6 +14,8 @@ import { CREATE_ALUNO } from "../../graphql/aluno";
 import User from "../user";
 import { StackTypes } from "../../routes/routes.types";
 import { Picker } from "@react-native-picker/picker";
+import { CURSOS } from "../../constants";
+import { scale } from "react-native-size-matters";
 const Signup = () => {
   const { createUser, loading } = useAuth();
   const navigation = useNavigation<StackTypes>();
@@ -22,32 +24,48 @@ const Signup = () => {
   const [nome, setNome] = useState("");
   const [matricula, setMatricula] = useState("");
   const [idade, setIdade] = useState("");
-  const [genero, setGenero] = useState(0);
+  const [genero, setGenero] = useState<string>("");
+  const [generoValue, setGeneroValue] = useState<number>(1);
   const [curso, setCurso] = useState("");
-
-
+  const [cursoValue, setCursoValue] = useState<number>(1);
+  const [toggleCurso, setToggleCurso] = useState(false);
+  const [toggleGenero, setToggleGenero] = useState(false);
 
   const { user } = useAuth();
 
-  const authId = user?.uid
+  const authId = user?.uid;
 
   const matriculaNum = parseInt(matricula, 10);
   const idadeNum = parseInt(idade, 10);
 
-  const [createAluno, { data, loading: createAlunoLoading }] = useMutation(CREATE_ALUNO, {
-    variables: {
-      nome: nome,
-      matricula: matriculaNum,
-      idade: idadeNum,
-      generos: genero,
-      // curso: curso,
-      authId: authId
+  useEffect(() => {
+    if (generoValue === 1) {
+      setGenero("Masculino");
+    } else {
+      setGenero("Feminino");
     }
-  })
+  }, [generoValue]);
+
+  useEffect(() => {
+    setCurso(CURSOS[cursoValue - 1]);
+  }, [cursoValue]);
+
+  const [createAluno, { data, loading: createAlunoLoading }] = useMutation(
+    CREATE_ALUNO,
+    {
+      variables: {
+        nome: nome,
+        matricula: matriculaNum,
+        idade: idadeNum,
+        generos: genero,
+        // curso: curso,
+        authId: authId,
+      },
+    }
+  );
 
   return (
     <View>
-      
       <TextInput
         style={styles.input}
         onChangeText={(text) => setEmail(text)}
@@ -78,31 +96,59 @@ const Signup = () => {
         value={idade}
         placeholder="Idade"
       />
-     <Text style={styles.textAlign} >Genero</Text>
-      <Picker style={styles.pickerStyle} selectedValue={1} onValueChange={(itemValue,itemIndex)=>setGenero(itemValue)}>
-          <Picker.Item label="Masculino" value={1} style={styles.input}></Picker.Item>
-          <Picker.Item label="Feminino" value={0}></Picker.Item>
-      </Picker>
-     <Text style={styles.textAlign}>Curso</Text>
-      <Picker style={styles.pickerStyle} selectedValue={1} onValueChange={(itemValue,itemIndex)=>setGenero(itemValue)}>
-          <Picker.Item label="Engenharia Quimica" value={1} ></Picker.Item>
-          <Picker.Item label="Engenharia Informatica" value={2}></Picker.Item>
-          <Picker.Item label="Engenharia Producao Industrial" value={3}></Picker.Item>
-          <Picker.Item label="Gestao Empresarial" value={4}></Picker.Item>
-          <Picker.Item label="Engenharia de Petroleos" value={5}></Picker.Item>
-          <Picker.Item label="Contabilidade" value={6}></Picker.Item>
-          <Picker.Item label="Economia" value={7}></Picker.Item>
-          <Picker.Item label="Geofisica" value={8}></Picker.Item>
-          <Picker.Item label="Engenharia Civil" value={9}></Picker.Item>
-          <Picker.Item label="Engenharia Electrotécnica" value={10}></Picker.Item>
-          <Picker.Item label="Engenharia Mecanica" value={11}></Picker.Item>
-      </Picker>
-      
-      
-
+      <TextInput
+        value={genero}
+        editable={false}
+        placeholder="Genero"
+        style={styles.input}
+        onChangeText={(text) => setIdade(text)}
+        onPressIn={() => setToggleGenero(!toggleGenero)}
+      />
+      {toggleGenero && (
+        <Picker
+          style={styles.pickerStyle}
+          selectedValue={generoValue}
+          mode="dialog"
+          onValueChange={(itemValue, itemIndex) => {
+            setGeneroValue(itemValue), setToggleGenero(false);
+          }}
+        >
+          <Picker.Item
+            label="Masculino"
+            value={1}
+            style={styles.input}
+          ></Picker.Item>
+          <Picker.Item label="Feminino" value={2}></Picker.Item>
+        </Picker>
+      )}
+      <TextInput
+        value={curso}
+        editable={false}
+        placeholder="Curso"
+        style={styles.input}
+        onPressIn={() => setToggleCurso(!toggleCurso)}
+      />
+      {toggleCurso && (
+        <Picker
+          style={styles.pickerStyle}
+          mode="dialog"
+          selectedValue={cursoValue}
+          onValueChange={(itemValue, itemIndex) => {
+            setCursoValue(itemValue), setToggleCurso(false);
+          }}
+        >
+          {CURSOS.map((curso, index) => (
+            <Picker.Item key={index} label={curso} value={index + 1} />
+          ))}
+        </Picker>
+      )}
       <Pressable
         style={styles.button}
-        onPress={() => {createUser(email, password), createAluno(), console.log('Aluno criado: ', data.student)}}
+        onPress={() => {
+          createUser(email, password),
+            createAluno(),
+            console.log("Aluno criado: ", data.student);
+        }}
       >
         {loading && createAlunoLoading ? (
           <ActivityIndicator />
@@ -111,7 +157,16 @@ const Signup = () => {
         )}
       </Pressable>
       <Pressable onPress={() => navigation.navigate("Login")}>
-        <Text style={{left:82, top:12, color:'#FFC423' }}>Já tenho uma conta. Fazer login</Text>
+        <Text
+          style={{
+            width: "100%",
+            textAlign: "center",
+            marginTop: scale(8),
+            color: "#FFC423",
+          }}
+        >
+          Já tenho uma conta. Fazer login
+        </Text>
       </Pressable>
     </View>
   );
@@ -123,30 +178,31 @@ const styles = StyleSheet.create({
   input: {
     height: 50,
     margin: 12,
+    paddingLeft: scale(12),
     borderWidth: 1,
-    borderRadius:12,
-    borderColor:'#C3C3C3',
+    borderRadius: 12,
+    borderColor: "#C3C3C3",
   },
   button: {
-     alignItems: "center",
+    alignItems: "center",
     backgroundColor: "#FFC423",
     padding: 10,
     margin: 12,
-    borderRadius:12,
+    borderRadius: 12,
   },
   buttonText: {
     color: "white",
     margin: 12,
   },
-  textAlign:{
+  textAlign: {
     left: 14,
   },
   pickerStyle: {
     margin: 12,
-    width: 366,
-    height: 50,
-    backgroundColor: '#E9E9E9',
-    borderColor: 'blue',
-    borderWidth: 13
-  }
+    // width: 366,
+    // height: 50,
+    backgroundColor: "#E9E9E9",
+    borderColor: "blue",
+    // borderWidth: 13
+  },
 });
