@@ -5,6 +5,7 @@ import {
   Pressable,
   StyleSheet,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import useAuth from "../../hooks/use-auth";
@@ -96,7 +97,39 @@ const Signup = () => {
         value={idade}
         placeholder="Idade"
       />
-      <TextInput
+      {Platform.OS === "android" ? (
+        <>
+         <Picker
+          style={styles.pickerStyle}
+          selectedValue={generoValue}
+          mode="dialog"
+          onValueChange={(itemValue, itemIndex) => {
+            setGeneroValue(itemValue), setToggleGenero(false);
+          }}
+        >
+          <Picker.Item
+            label="Masculino"
+            value={1}
+            style={styles.input}
+          ></Picker.Item>
+          <Picker.Item label="Feminino" value={2}></Picker.Item>
+        </Picker>
+        <Picker
+          style={styles.pickerStyle}
+          mode="dialog"
+          selectedValue={cursoValue}
+          onValueChange={(itemValue, itemIndex) => {
+            setCursoValue(itemValue), setToggleCurso(false);
+          }}
+        >
+          {CURSOS.map((curso, index) => (
+            <Picker.Item key={index} label={curso} value={index + 1} />
+          ))}
+        </Picker>
+        </>
+      ) : (
+        <>
+<TextInput
         value={genero}
         editable={false}
         placeholder="Genero"
@@ -141,6 +174,8 @@ const Signup = () => {
             <Picker.Item key={index} label={curso} value={index + 1} />
           ))}
         </Picker>
+      )}
+      </>
       )}
       <Pressable
         style={styles.button}
