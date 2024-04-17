@@ -6,6 +6,7 @@ import { Colors } from "react-native/Libraries/NewAppScreen";
 import { useQuery } from "@apollo/client";
 import { GET_COURSES } from "../../graphql/cursos";
 import PickerInput from "../../components/picker-input";
+import { PickerToggles } from "./home.types";
 
 const Home = () => {
   const [isPsicologicVisible, setPsicologicVisible] = useState(false);
@@ -33,124 +34,152 @@ const Home = () => {
   const [isDistance, setDistance] = useState(1);
   const [distanceValue, setDistanceValue] = useState(1);
   const [distanceText, setDistanceText] = useState("Muito Proximo");
+  const [pickerToggles, setPickerToggles] = useState<PickerToggles>({
+    pressao: false,
+    stress: false,
+    emprego: false,
+    financa: false,
+    apoio: false,
+    dificult: false,
+    distance: false,
+  });
+
+  const handleTogglePicker = (picker: keyof PickerToggles) => {
+    setPickerToggles((prevState) => ({
+      ...prevState,
+      [picker]: !prevState[picker],
+    }));
+  };
 
   const pressao = [
     {
       label: "Entre 80PA e 120PA",
-      value: 1,
+      selectedValue: 1,
     },
     {
       label: "Maior que 120PA",
-      value: 0,
+      selectedValue: 2,
     },
   ];
 
   const stress = [
     {
       label: "Sim",
-      value: 1,
+      selectedValue: 1,
     },
     {
-      label: "Nao",
-      value: 0,
+      label: "Não",
+      selectedValue: 2,
     },
   ];
 
   const emprego = [
     {
       label: "Sim",
-      value: 1,
+      selectedValue: 1,
     },
     {
-      label: "Nao",
-      value: 0,
+      label: "Não",
+      selectedValue: 2,
     },
   ];
 
   const financa = [
     {
       label: "Sim",
-      value: 1,
+      selectedValue: 1,
     },
     {
-      label: "Nao",
-      value: 0,
+      label: "Não",
+      selectedValue: 2,
     },
   ];
 
   const apoio = [
     {
       label: "Sim",
-      value: 1,
+      selectedValue: 1,
     },
     {
-      label: "Nao",
-      value: 0,
+      label: "Não",
+      selectedValue: 2,
     },
   ];
 
   const dificult = [
     {
       label: "Sim",
-      value: 1,
+      selectedValue: 1,
     },
     {
-      label: "Nao",
-      value: 0,
+      label: "Não",
+      selectedValue: 2,
     },
   ];
 
   const distance = [
     {
       label: "Muito Proximo",
-      value: 1,
+      selectedValue: 1,
     },
     {
       label: "Proximo",
-      value: 2,
+      selectedValue: 2,
     },
     {
       label: "Razoavel",
-      value: 3,
+      selectedValue: 3,
     },
     {
       label: "Distante",
-      value: 4,
+      selectedValue: 4,
     },
     {
       label: "Muito Distante",
-      value: 5,
+      selectedValue: 5,
     },
   ];
 
   useEffect(() => {
-     if (pressaoValue > 0 && pressaoValue <= pressao.length) {
-    setPressaoText(pressao[pressaoValue - 1].label);
-     }
+    if (pressaoValue > 0 && pressaoValue <= pressao.length) {
+      setPressaoText(pressao[pressaoValue - 1].label);
+    }
   }, [pressaoValue]);
 
   useEffect(() => {
-    setStressText(stress[stressValue - 1].label);
+    if (stressValue > 0 && stressValue <= stress.length) {
+      setStressText(stress[stressValue - 1].label);
+    }
   }, [stressValue]);
 
   useEffect(() => {
-    setEmpregoText(emprego[empregoValue - 1].label);
+    if (empregoValue > 0 && empregoValue <= emprego.length) {
+      setEmpregoText(emprego[empregoValue - 1].label);
+    }
   }, [empregoValue]);
 
   useEffect(() => {
-    setFinancaText(financa[financaValue - 1].label);
+    if (financaValue > 0 && financaValue <= financa.length) {
+      setFinancaText(financa[financaValue - 1].label);
+    }
   }, [financaValue]);
 
   useEffect(() => {
-    setApoioText(apoio[apoioValue - 1].label);
+    if (apoioValue > 0 && apoioValue <= apoio.length) {
+      setApoioText(apoio[apoioValue - 1].label);
+    }
   }, [apoioValue]);
 
   useEffect(() => {
-    setDificultText(dificult[dificultValue - 1].label);
+    if (dificultValue > 0 && dificultValue <= dificult.length) {
+      setDificultText(dificult[dificultValue - 1].label);
+    }
   }, [dificultValue]);
 
   useEffect(() => {
-    setDistanceText(distance[distanceValue - 1].label);
+    if (distanceValue > 0 && distanceValue <= distance.length) {
+      setDistanceText(distance[distanceValue - 1].label);
+    }
   }, [distanceValue]);
 
   if (loading) return <ActivityIndicator />;
@@ -197,31 +226,44 @@ const Home = () => {
                 <Text>Pressao</Text>
                 <PickerInput
                   items={pressao}
-                  value={pressaoText}
                   placeholder="Pressão"
+                  textValue={pressaoText}
+                  togglePicker={pickerToggles.pressao}
+                  setTogglePicker={() => handleTogglePicker("pressao")}
                   selectedValue={pressaoValue}
                   onChangeText={(text) => setPressaoText(text)}
-                  onChange={(itemValue, itemIndex) =>
-                    setPressaoValue(itemValue)
-                  }
+                  onChange={(itemValue, itemIndex) => {
+                    setPressaoValue(itemValue);
+                    handleTogglePicker("pressao");
+                  }}
                 />
                 <Text>Estresse</Text>
                 <PickerInput
                   items={stress}
-                  value={stressText}
+                  textValue={stressText}
                   placeholder="Estresse"
+                  togglePicker={pickerToggles.stress}
+                  setTogglePicker={() => handleTogglePicker("stress")}
                   selectedValue={stressValue}
                   onChangeText={(text) => setStressText(text)}
-                  onChange={(itemValue, itemIndex) => setStressValue(itemValue)}
+                  onChange={(itemValue, itemIndex) => {
+                    setStressValue(itemValue);
+                    handleTogglePicker("stress");
+                  }}
                 />
                 <Text>Apoio Emocional</Text>
                 <PickerInput
                   items={apoio}
-                  value={apoioText}
+                  textValue={apoioText}
                   placeholder="Apoio Emocional"
+                  togglePicker={pickerToggles.apoio}
+                  setTogglePicker={() => handleTogglePicker("apoio")}
                   selectedValue={apoioValue}
                   onChangeText={(text) => setApoioText(text)}
-                  onChange={(itemValue, itemIndex) => setApoioValue(itemValue)}
+                  onChange={(itemValue, itemIndex) => {
+                    setApoioValue(itemValue);
+                    handleTogglePicker("apoio");
+                  }}
                 />
               </View>
               <Pressable
@@ -249,35 +291,44 @@ const Home = () => {
                 <Text>É empregado?</Text>
                 <PickerInput
                   items={emprego}
-                  value={empregoText}
+                  textValue={empregoText}
                   placeholder="Emprego"
                   selectedValue={empregoValue}
+                  togglePicker={pickerToggles.emprego}
+                  setTogglePicker={() => handleTogglePicker("emprego")}
                   onChangeText={(text) => setEmpregoText(text)}
-                  onChange={(itemValue, itemIndex) =>
-                    setEmpregoValue(itemValue)
-                  }
+                  onChange={(itemValue, itemIndex) => {
+                    setEmpregoValue(itemValue);
+                    handleTogglePicker("emprego");
+                  }}
                 />
                 <Text>Recebe Apoio Fianceiro?</Text>
                 <PickerInput
                   items={financa}
-                  value={financaText}
+                  textValue={financaText}
                   placeholder="Apoio Financeiro"
                   selectedValue={financaValue}
+                  togglePicker={pickerToggles.financa}
+                  setTogglePicker={() => handleTogglePicker("financa")}
                   onChangeText={(text) => setFinancaText(text)}
-                  onChange={(itemValue, itemIndex) =>
-                    setFinancaValue(itemValue)
-                  }
+                  onChange={(itemValue, itemIndex) => {
+                    setFinancaValue(itemValue);
+                    handleTogglePicker("financa");
+                  }}
                 />
                 <Text>Enfrenta Dificuldades Financeiras?</Text>
                 <PickerInput
                   items={dificult}
-                  value={dificultText}
+                  textValue={dificultText}
                   placeholder="Dificuldades Financeiras"
                   selectedValue={dificultValue}
+                  togglePicker={pickerToggles.dificult}
+                  setTogglePicker={() => handleTogglePicker("dificult")}
                   onChangeText={(text) => setDificultText(text)}
-                  onChange={(itemValue, itemIndex) =>
-                    setDificultValue(itemValue)
-                  }
+                  onChange={(itemValue, itemIndex) => {
+                    setDificultValue(itemValue);
+                    handleTogglePicker("dificult");
+                  }}
                 />
               </View>
               <Pressable
@@ -305,13 +356,16 @@ const Home = () => {
                 <Text>Quão distante vive da universidade</Text>
                 <PickerInput
                   items={distance}
-                  value={distanceText}
+                  textValue={distanceText}
                   placeholder="Distancia"
                   selectedValue={distanceValue}
+                  togglePicker={pickerToggles.distance}
+                  setTogglePicker={() => handleTogglePicker("distance")}
                   onChangeText={(text) => setDistanceText(text)}
-                  onChange={(itemValue, itemIndex) =>
-                    setDistanceValue(itemValue)
-                  }
+                  onChange={(itemValue, itemIndex) => {
+                    setDistanceValue(itemValue);
+                    handleTogglePicker("distance");
+                  }}
                 />
               </View>
               <Pressable

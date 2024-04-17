@@ -4,7 +4,7 @@ import { scale } from "react-native-size-matters";
 import { InputProps } from "./input.types";
 
 const Input: FC<InputProps> = ({
-  value,
+  textValue,
   editable,
   onPressIn,
   placeholder,
@@ -12,8 +12,8 @@ const Input: FC<InputProps> = ({
 }) => {
   return (
     <TextInput
-      value={value}
       editable={editable}
+      value={textValue}
       style={styles.input}
       onPressIn={onPressIn}
       placeholder={placeholder}

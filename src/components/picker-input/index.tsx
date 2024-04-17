@@ -1,5 +1,5 @@
 import { Platform, StyleSheet } from "react-native";
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import { Picker } from "@react-native-picker/picker";
 import { PickerInputProps } from "./picker-input.types";
 import Input from "../input";
@@ -7,36 +7,40 @@ import { InputProps } from "../input/input.types";
 import { scale } from "react-native-size-matters";
 
 const PickerInput: FC<PickerInputProps & InputProps> = ({
-  value,
   items,
   onChange,
+  textValue,
   placeholder,
+  togglePicker,
   onChangeText,
   selectedValue,
+  setTogglePicker,
 }) => {
-  const [togglePicker, setTogglePicker] = useState(false);
-
   return (
     <>
       {Platform.OS === "android" ? (
         <Picker
           mode="dialog"
+          style={styles.pickerStyle}
           selectedValue={selectedValue}
           onValueChange={onChange}
-          style={styles.pickerStyle}
         >
           {items.map((item, index) => (
-            <Picker.Item key={index} label={item.label} value={item.value} />
+            <Picker.Item
+              key={index}
+              label={item.label}
+              value={item.selectedValue}
+            />
           ))}
         </Picker>
       ) : (
         <>
           <Input
-            value={value}
             editable={false}
+            textValue={textValue}
             placeholder={placeholder}
             onChangeText={onChangeText}
-            onPressIn={() => setTogglePicker(!togglePicker)}
+            onPressIn={() => setTogglePicker && setTogglePicker(!togglePicker)}
           />
           {togglePicker && (
             <Picker
@@ -49,7 +53,7 @@ const PickerInput: FC<PickerInputProps & InputProps> = ({
                 <Picker.Item
                   key={index}
                   label={item.label}
-                  value={item.value}
+                  value={item.selectedValue}
                 />
               ))}
             </Picker>

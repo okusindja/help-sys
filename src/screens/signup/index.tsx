@@ -71,45 +71,45 @@ const Signup = () => {
     <View>
       <Input
         onChangeText={(text) => setEmail(text)}
-        value={email}
+        textValue={email}
         placeholder="Email"
       />
       <Input
         onChangeText={(text) => setPassword(text)}
-        value={password}
+        textValue={password}
         placeholder="Password"
       />
       <Input
         onChangeText={(text) => setNome(text)}
-        value={nome}
+        textValue={nome}
         placeholder="Nome"
       />
       <Input
         onChangeText={(text) => setMatricula(text)}
-        value={matricula}
+        textValue={matricula}
         placeholder="Matricula"
       />
       <Input
         onChangeText={(text) => setIdade(text)}
-        value={idade}
+        textValue={idade}
         placeholder="Idade"
       />
       <PickerInput
-        value={genero}
+        textValue={genero}
         placeholder="Genero"
         selectedValue={generoValue}
         onChangeText={(text) => setGenero(text)}
         items={[
-          { label: "Feminino", value: 2 },
-          { label: "Masculino", value: 1 },
+          { label: "Feminino", selectedValue: 2 },
+          { label: "Masculino", selectedValue: 1 },
         ]}
         onChange={(itemValue, itemIndex) => {
           setGeneroValue(itemValue), setToggleGenero(false);
         }}
       />
       <PickerInput
-        value={curso}
         items={CURSOS}
+        textValue={curso}
         placeholder="Cursos"
         selectedValue={cursoValue}
         onChangeText={(text) => setCurso(text)}
