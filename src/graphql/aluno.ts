@@ -5,9 +5,9 @@ export const CREATE_ALUNO = gql`
     $nome: String!
     $matricula: Int!
     $idade: Int!
-    $genero: Genders
-    $authId: String
-    $curso: CursoWhereUniqueInput
+    $genero: Genders!
+    $email: String!
+    $idCurso: ID!
   ) {
     createAluno(
       data: {
@@ -15,13 +15,18 @@ export const CREATE_ALUNO = gql`
         matricula: $matricula
         idade: $idade
         generos: $genero
-        authId: $authId
-        curso: $curso
+        email: $email
+        curso: { connect: { id: $idCurso } }
       }
     ) {
       name
       matricula
+      curso {
+        nome
+      }
     }
-    publishAluno(where: { authId: $authId })
+    publishAluno(where: { email: $email }) {
+      id
+    }
   }
 `;

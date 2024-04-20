@@ -5,8 +5,8 @@ import React from "react";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { useQuery } from "@apollo/client";
 import { GET_COURSES } from "../../graphql/cursos";
-import PickerInput from "../../components/picker-input";
 import { PickerToggles } from "./home.types";
+import PickerInput from "../../components/picker-input";
 
 const Home = () => {
   const [isPsicologicVisible, setPsicologicVisible] = useState(false);

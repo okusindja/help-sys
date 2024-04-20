@@ -10,7 +10,7 @@ import {
 import React, { useEffect, useState } from "react";
 import useAuth from "../../hooks/use-auth";
 import { useNavigation } from "@react-navigation/native";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { CREATE_ALUNO } from "../../graphql/aluno";
 import User from "../user";
 import { StackTypes } from "../../routes/routes.types";
@@ -19,6 +19,8 @@ import { CURSOS } from "../../constants";
 import { scale } from "react-native-size-matters";
 import Input from "../../components/input";
 import PickerInput from "../../components/picker-input";
+import { GET_COURSES } from "../../graphql/cursos";
+
 const Signup = () => {
   const { createUser, loading } = useAuth();
   const navigation = useNavigation<StackTypes>();
@@ -30,13 +32,10 @@ const Signup = () => {
   const [genero, setGenero] = useState<string>("");
   const [generoValue, setGeneroValue] = useState<number>(1);
   const [curso, setCurso] = useState("");
-  const [cursoValue, setCursoValue] = useState<number>(1);
+  const [cursoValue, setCursoValue] = useState<string>("");
+  const [cursoIndex, setCursoIndex] = useState<number>(0);
   const [toggleCurso, setToggleCurso] = useState(false);
   const [toggleGenero, setToggleGenero] = useState(false);
-
-  const { user } = useAuth();
-
-  const authId = user?.uid;
 
   const matriculaNum = parseInt(matricula, 10);
   const idadeNum = parseInt(idade, 10);
@@ -49,19 +48,34 @@ const Signup = () => {
     }
   }, [generoValue]);
 
+  const { data: cursosData, loading: cursosLoading } = useQuery(GET_COURSES);
+
+  if (cursosLoading) return <ActivityIndicator />;
+  const parsedCourses = cursosData?.cursos.map((curso: any) => ({
+    value: curso.id,
+    label: curso.nome,
+  }));
+
   useEffect(() => {
-    setCurso(CURSOS[cursoValue - 1].label);
-  }, [cursoValue]);
+    if (parsedCourses && cursoIndex >= 0 && cursoIndex < parsedCourses.length) {
+      setCurso(parsedCourses[cursoIndex].label);
+      setCursoValue(
+        parsedCourses.find(
+          (course: { label: string }) => course.label === curso
+        )?.value
+      );
+    }
+  }, [cursoIndex, parsedCourses]);
 
   const [createAluno, { data, loading: createAlunoLoading }] = useMutation(
     CREATE_ALUNO,
     {
       variables: {
         nome: nome,
-        curso: curso,
-        authId: authId,
+        email: email,
         generos: genero,
         idade: idadeNum,
+        idCurso: cursoValue,
         matricula: matriculaNum,
       },
     }
@@ -70,34 +84,36 @@ const Signup = () => {
   return (
     <View>
       <Input
-        onChangeText={(text) => setEmail(text)}
         textValue={email}
         placeholder="Email"
+        onChangeText={(text) => setEmail(text)}
       />
       <Input
-        onChangeText={(text) => setPassword(text)}
         textValue={password}
         placeholder="Password"
+        onChangeText={(text) => setPassword(text)}
       />
       <Input
-        onChangeText={(text) => setNome(text)}
         textValue={nome}
         placeholder="Nome"
+        onChangeText={(text) => setNome(text)}
       />
       <Input
-        onChangeText={(text) => setMatricula(text)}
         textValue={matricula}
         placeholder="Matricula"
+        onChangeText={(text) => setMatricula(text)}
       />
       <Input
-        onChangeText={(text) => setIdade(text)}
         textValue={idade}
         placeholder="Idade"
+        onChangeText={(text) => setIdade(text)}
       />
       <PickerInput
         textValue={genero}
         placeholder="Genero"
         selectedValue={generoValue}
+        togglePicker={toggleGenero}
+        setTogglePicker={setToggleGenero}
         onChangeText={(text) => setGenero(text)}
         items={[
           { label: "Feminino", selectedValue: 2 },
@@ -108,21 +124,28 @@ const Signup = () => {
         }}
       />
       <PickerInput
-        items={CURSOS}
         textValue={curso}
         placeholder="Cursos"
-        selectedValue={cursoValue}
+        items={parsedCourses}
+        togglePicker={toggleCurso}
+        selectedValue={cursoIndex}
+        setTogglePicker={setToggleCurso}
         onChangeText={(text) => setCurso(text)}
         onChange={(itemValue, itemIndex) => {
-          setCursoValue(itemValue), setToggleCurso(false);
+          setCursoIndex(itemIndex), setToggleCurso(false);
         }}
       />
       <Pressable
         style={styles.button}
         onPress={() => {
-          createUser(email, password),
-            createAluno(),
-            console.log("Aluno criado: ", data.student);
+          try {
+            createAluno().then(() => {
+              console.log("Aluno criado com sucesso", data.createAluno.nome);
+            });
+            createUser(email, password);
+          } catch (error) {
+            console.log("Erro ao criar aluno", error);
+          }
         }}
       >
         {loading && createAlunoLoading ? (
