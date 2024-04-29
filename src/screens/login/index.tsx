@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius:12,
     borderColor:'#C3C3C3',
-    paddingLeft:12
+    paddingLeft:12,
   },
   button: {
     alignItems: "center",
@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "black",
     margin: 12,
+    
   },
   Tela: {
     padding:9,
