@@ -29,57 +29,54 @@ const Signup = () => {
   const [nome, setNome] = useState("");
   const [matricula, setMatricula] = useState("");
   const [idade, setIdade] = useState("");
-  const [genero, setGenero] = useState<string>("");
-  const [generoValue, setGeneroValue] = useState<number>(1);
+  const [genero, setGenero] = useState("");
+  const [generoValue, setGeneroValue] = useState(1);
   const [curso, setCurso] = useState("");
-  const [cursoValue, setCursoValue] = useState<string>("");
-  const [cursoIndex, setCursoIndex] = useState<number>(0);
+  const [cursoValue, setCursoValue] = useState("");
+  const [cursoIndex, setCursoIndex] = useState(0);
   const [toggleCurso, setToggleCurso] = useState(false);
   const [toggleGenero, setToggleGenero] = useState(false);
 
   const matriculaNum = parseInt(matricula, 10);
   const idadeNum = parseInt(idade, 10);
 
-  useEffect(() => {
-    if (generoValue === 1) {
-      setGenero("Masculino");
-    } else {
-      setGenero("Feminino");
-    }
-  }, [generoValue]);
-
   const { data: cursosData, loading: cursosLoading } = useQuery(GET_COURSES);
-
-  if (cursosLoading) return <ActivityIndicator />;
-  const parsedCourses = cursosData?.cursos.map((curso: any) => ({
-    value: curso.id,
-    label: curso.nome,
-  }));
-
-  useEffect(() => {
-    if (parsedCourses && cursoIndex >= 0 && cursoIndex < parsedCourses.length) {
-      setCurso(parsedCourses[cursoIndex].label);
-      setCursoValue(
-        parsedCourses.find(
-          (course: { label: string }) => course.label === curso
-        )?.value
-      );
-    }
-  }, [cursoIndex, parsedCourses]);
-
   const [createAluno, { data, loading: createAlunoLoading }] = useMutation(
     CREATE_ALUNO,
     {
       variables: {
         nome: nome,
         email: email,
-        generos: genero,
+        genero: genero,
         idade: idadeNum,
         idCurso: cursoValue,
         matricula: matriculaNum,
       },
     }
   );
+
+  useEffect(() => {
+    setGenero(generoValue === 1 ? "Masculino" : "Feminino");
+  }, [generoValue]);
+
+  const parsedCourses = cursosData.cursos.map(
+    (curso: { id: string; nome: string }) => ({
+      value: curso.id,
+      label: curso.nome,
+    })
+  );
+
+  useEffect(() => {
+    if (cursosData) {
+      if (cursoIndex >= 0 && cursoIndex < parsedCourses.length) {
+        const selectedCurso = parsedCourses[cursoIndex];
+        setCurso(selectedCurso.label);
+        setCursoValue(selectedCurso.value);
+      }
+    }
+  }, [cursosData, cursoIndex]);
+
+  if (cursosLoading) return <ActivityIndicator size="large" />;
 
   return (
     <View>
