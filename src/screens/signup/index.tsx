@@ -1,21 +1,16 @@
 import {
   View,
   Text,
-  TextInput,
   Pressable,
   StyleSheet,
   ActivityIndicator,
-  Platform,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import useAuth from "../../hooks/use-auth";
 import { useNavigation } from "@react-navigation/native";
 import { useMutation, useQuery } from "@apollo/client";
 import { CREATE_ALUNO } from "../../graphql/aluno";
-import User from "../user";
 import { StackTypes } from "../../routes/routes.types";
-import { Picker } from "@react-native-picker/picker";
-import { CURSOS } from "../../constants";
 import { scale } from "react-native-size-matters";
 import Input from "../../components/input";
 import PickerInput from "../../components/picker-input";
@@ -29,6 +24,8 @@ const Signup = () => {
   const [nome, setNome] = useState("");
   const [matricula, setMatricula] = useState("");
   const [idade, setIdade] = useState("");
+  const [anoAcademico, setAnoAcademico] = useState("");
+  const [anoAcademicoValue, setAnoAcademicoValue] = useState(1);
   const [genero, setGenero] = useState("");
   const [generoValue, setGeneroValue] = useState(1);
   const [curso, setCurso] = useState("");
@@ -36,6 +33,7 @@ const Signup = () => {
   const [cursoIndex, setCursoIndex] = useState(0);
   const [toggleCurso, setToggleCurso] = useState(false);
   const [toggleGenero, setToggleGenero] = useState(false);
+  const [toggleAnoAcademico, setToggleAnoAcademico] = useState(false);
 
   const matriculaNum = parseInt(matricula, 10);
   const idadeNum = parseInt(idade, 10);
@@ -49,6 +47,7 @@ const Signup = () => {
         email: email,
         genero: genero,
         idade: idadeNum,
+        ano: anoAcademico,
         idCurso: cursoValue,
         matricula: matriculaNum,
       },
@@ -59,7 +58,21 @@ const Signup = () => {
     setGenero(generoValue === 1 ? "Masculino" : "Feminino");
   }, [generoValue]);
 
-  const parsedCourses = cursosData.cursos.map(
+  useEffect(() => {
+    setAnoAcademico(
+      anoAcademicoValue === 5
+        ? "quinto"
+        : anoAcademicoValue === 4
+        ? "quarto"
+        : anoAcademicoValue === 3
+        ? "terceiro"
+        : anoAcademicoValue === 2
+        ? "segundo"
+        : "primeiro"
+    );
+  }, [anoAcademicoValue]);
+
+  const parsedCourses = cursosData?.cursos.map(
     (curso: { id: string; nome: string }) => ({
       value: curso.id,
       label: curso.nome,
@@ -99,6 +112,24 @@ const Signup = () => {
         textValue={matricula}
         placeholder="Matricula"
         onChangeText={(text) => setMatricula(text)}
+      />
+      <PickerInput
+        textValue={anoAcademico}
+        placeholder="Ano Academico"
+        selectedValue={anoAcademicoValue}
+        togglePicker={toggleAnoAcademico}
+        setTogglePicker={setToggleAnoAcademico}
+        onChangeText={(text) => setAnoAcademico(text)}
+        items={[
+          { label: "1º ano", selectedValue: 1 },
+          { label: "2º ano", selectedValue: 2 },
+          { label: "3º ano", selectedValue: 3 },
+          { label: "4º ano", selectedValue: 4 },
+          { label: "5º ano", selectedValue: 5 },
+        ]}
+        onChange={(itemValue, itemIndex) => {
+          setAnoAcademicoValue(itemValue), setToggleAnoAcademico(false);
+        }}
       />
       <Input
         textValue={idade}

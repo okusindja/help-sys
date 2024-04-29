@@ -8,6 +8,7 @@ export const CREATE_ALUNO = gql`
     $genero: Genders!
     $email: String!
     $idCurso: ID!
+    $ano: Ano!
   ) {
     createAluno(
       data: {
@@ -16,6 +17,7 @@ export const CREATE_ALUNO = gql`
         idade: $idade
         generos: $genero
         email: $email
+        anoAcademico: $ano
         curso: { connect: { id: $idCurso } }
       }
     ) {
