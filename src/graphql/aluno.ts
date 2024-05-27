@@ -32,3 +32,22 @@ export const CREATE_ALUNO = gql`
     }
   }
 `;
+
+export const GET_ALUNOS = gql`
+  query MyQuery {
+    alunos {
+      id
+      nome
+      email
+    }
+  }
+`;
+
+export const GET_ALUNO_BY_EMAIL = gql`
+  query MyQuery {
+    aluno(where: { email: $email }) {
+      name
+      email
+    }
+  }
+`;
