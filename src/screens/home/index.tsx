@@ -1,6 +1,6 @@
 import React, { useReducer } from 'react';
 import { View, Text, Pressable, ActivityIndicator } from 'react-native';
-import { ApolloError, useMutation, useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { CREATE_DATA_ANALISE } from '../../graphql/data-analise';
 import useAuth from '../../hooks/use-auth';
 
@@ -12,33 +12,10 @@ import DadosSociais from './modals/dados-sociais';
 import ToggleButton from './modals/toggle-button';
 import { initialState, reducer } from './reducer';
 import { styles } from './styles';
-import { GET_ALUNO_BY_EMAIL, GET_ALUNOS } from '../../graphql/aluno';
 
 const Home: React.FC = () => {
   const { user } = useAuth();
   const [state, dispatch] = useReducer(reducer, initialState);
-
-  const email = user!.email;
-
-  const [createDataAnalise, { data, loading, error }] = useMutation(
-    CREATE_DATA_ANALISE,
-    {
-      variables: {
-        apoioEmocional: state.apoioText,
-        dificuldadesFinanceiras: state.dificultText,
-        distancia: state.distanciaText,
-        empregado: state.empregoText,
-        estresse: state.stressText,
-        pressao: state.pressaoText,
-        apoioFinanceiro: state.financaText,
-        email: email,
-      },
-    }
-  );
-
-  if (error) {
-    console.error('Error submitting data:', error.message);
-  }
 
   const toggleModal = (modal: keyof HomeState) => {
     dispatch({ type: 'TOGGLE_MODAL', modal });
@@ -77,22 +54,13 @@ const Home: React.FC = () => {
         style={styles.finalButton}
         onPress={() => {
           try {
-            createDataAnalise().then(() => {
-              console.log(
-                'Aluno criado com sucesso',
-                data?.createDataAnalise.id
-              );
-            });
+            console.log('Aluno criado com sucesso');
           } catch (error) {
             console.log('Erro ao criar aluno', error);
           }
         }}
       >
-        {loading ? (
-          <ActivityIndicator />
-        ) : (
-          <Text style={styles.buttonText}>Enviar meus dados</Text>
-        )}
+        <Text style={styles.buttonText}>Enviar meus dados</Text>
       </Pressable>
     </View>
   );

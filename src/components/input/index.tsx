@@ -9,13 +9,15 @@ const Input: FC<InputProps> = ({
   onPressIn,
   placeholder,
   onChangeText,
+  color,
 }) => {
   return (
     <TextInput
       editable={editable}
       value={textValue}
-      style={styles.input}
+      style={[styles.input, { color: color }]}
       onPressIn={onPressIn}
+      placeholderTextColor={color}
       placeholder={placeholder}
       onChangeText={onChangeText}
     />

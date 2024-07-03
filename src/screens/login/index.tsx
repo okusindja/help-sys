@@ -5,36 +5,42 @@ import {
   Pressable,
   StyleSheet,
   ActivityIndicator,
-} from "react-native";
-import React, { useState } from "react";
-import useAuth from "../../hooks/use-auth";
-import { useNavigation } from "@react-navigation/native";
-import { useQuery } from "@apollo/client";
-import { GET_COURSES } from "../../graphql/cursos";
-import { StackTypes } from "../../routes/routes.types";
+  ImageBackground,
+  Image,
+  Dimensions,
+} from 'react-native';
+import React, { useState } from 'react';
+import useAuth from '../../hooks/use-auth';
+import { useNavigation } from '@react-navigation/native';
+import { StackTypes } from '../../routes/routes.types';
+
+const bg = require('../../../assets/bg.png');
+const logo = require('../../../assets/logo.png');
 
 const Login = () => {
   const { login, loading } = useAuth();
   const navigation = useNavigation<StackTypes>();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");    
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const width = Dimensions.get('window').width;
 
   return (
-    <View style={styles.Tela}>
-      
-      <Text style={styles.MaileSenha}>Email</Text>
+    <ImageBackground style={styles.Tela} source={bg} resizeMode='cover'>
+      <Text style={styles.title}>Login</Text>
+      <Text style={styles.label}>Email</Text>
       <TextInput
         style={styles.input}
         onChangeText={(text) => setEmail(text)}
         value={email}
-        placeholder="Antonio@isptec.co.ao"
+        placeholder='Antonio@isptec.co.ao'
       />
-      <Text style={styles.MaileSenha}>Password</Text>
+      <Text style={styles.label}>Password</Text>
       <TextInput
         style={styles.input}
         onChangeText={(text) => setPassword(text)}
         value={password}
-        placeholder="Password"
+        placeholder='Password'
       />
       <Pressable style={styles.button} onPress={() => login(email, password)}>
         {loading ? (
@@ -43,10 +49,15 @@ const Login = () => {
           <Text style={styles.buttonText}>Entrar</Text>
         )}
       </Pressable>
-      <Pressable onPress={() => navigation.navigate("Signup")}>
+      <Pressable onPress={() => navigation.navigate('Signup')}>
         <Text style={styles.RegText}>Não tenho conta. Criar conta</Text>
       </Pressable>
-    </View>
+      <Image
+        source={logo}
+        resizeMode='contain'
+        style={[styles.logo, { left: width / 3 }]}
+      />
+    </ImageBackground>
   );
 };
 
@@ -57,35 +68,47 @@ const styles = StyleSheet.create({
     height: 55,
     margin: 12,
     borderWidth: 1,
-    borderRadius:12,
-    borderColor:'#C3C3C3',
-    paddingLeft:12,
+    borderRadius: 12,
+    borderColor: '#C3C3C3',
+    paddingLeft: 12,
+  },
+  title: {
+    fontSize: 30,
+    textAlign: 'center',
+    color: 'white',
+    marginBottom: 50,
+  },
+  label: {
+    paddingLeft: 12,
+    fontSize: 15,
+    color: 'white',
   },
   button: {
-    alignItems: "center",
-    backgroundColor: "#FFC423",
+    alignItems: 'center',
+    backgroundColor: '#FFC423',
     padding: 10,
     margin: 12,
-    borderRadius:12,
+    color: '#fff',
+    borderRadius: 12,
   },
   buttonText: {
-    color: "black",
+    color: 'white',
     margin: 12,
-    
   },
   Tela: {
-    padding:9,
-    top:13,
-    display:'flex',
-  }, 
-  MaileSenha:{
-    left:12,
-    fontSize:15,
+    padding: 9,
+    paddingTop: 200,
+    flex: 1,
   },
-  RegText:{
-    color:'black',
+  RegText: {
+    color: '#FFC423',
     width: '100%',
-    textAlign:'center',
-    textDecorationColor:'',
-  }
+    textAlign: 'center',
+    textDecorationColor: '',
+  },
+  logo: {
+    width: 140,
+    position: 'absolute',
+    bottom: 60,
+  },
 });

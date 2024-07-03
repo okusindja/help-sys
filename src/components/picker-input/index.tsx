@@ -12,15 +12,16 @@ const PickerInput: FC<PickerInputProps & InputProps> = ({
   textValue,
   placeholder,
   togglePicker,
+  color,
   onChangeText,
   selectedValue,
   setTogglePicker,
 }) => {
   return (
     <>
-      {Platform.OS === "android" ? (
+      {Platform.OS === 'android' ? (
         <Picker
-          mode="dialog"
+          mode='dialog'
           style={styles.pickerStyle}
           selectedValue={selectedValue}
           onValueChange={onChange}
@@ -36,6 +37,7 @@ const PickerInput: FC<PickerInputProps & InputProps> = ({
       ) : (
         <>
           <Input
+            color={color}
             editable={false}
             textValue={textValue}
             placeholder={placeholder}
@@ -44,7 +46,7 @@ const PickerInput: FC<PickerInputProps & InputProps> = ({
           />
           {togglePicker && (
             <Picker
-              mode="dialog"
+              mode='dialog'
               onValueChange={onChange}
               style={styles.pickerStyle}
               selectedValue={selectedValue}

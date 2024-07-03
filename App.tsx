@@ -6,6 +6,8 @@ import useAuth from './src/hooks/use-auth';
 import LoginStack from './src/routes/login';
 import { NavigationContainer } from '@react-navigation/native';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import { InitialScreen } from './src/screens';
+import React from 'react';
 
 const client = new ApolloClient({
   uri: 'https://api-us-east-1-shared-usea1-02.hygraph.com/v2/clu9y3rbx042907w7jphaef00/master',

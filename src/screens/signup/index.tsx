@@ -4,32 +4,36 @@ import {
   Pressable,
   StyleSheet,
   ActivityIndicator,
-} from "react-native";
-import React, { useEffect, useState } from "react";
-import useAuth from "../../hooks/use-auth";
-import { useNavigation } from "@react-navigation/native";
-import { useMutation, useQuery } from "@apollo/client";
-import { CREATE_ALUNO } from "../../graphql/aluno";
-import { StackTypes } from "../../routes/routes.types";
-import { scale } from "react-native-size-matters";
-import Input from "../../components/input";
-import PickerInput from "../../components/picker-input";
-import { GET_COURSES } from "../../graphql/cursos";
+  ImageBackground,
+} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import useAuth from '../../hooks/use-auth';
+import { useNavigation } from '@react-navigation/native';
+import { useMutation, useQuery } from '@apollo/client';
+import { CREATE_ALUNO } from '../../graphql/aluno';
+import { StackTypes } from '../../routes/routes.types';
+import { scale } from 'react-native-size-matters';
+import Input from '../../components/input';
+import PickerInput from '../../components/picker-input';
+import { GET_COURSES } from '../../graphql/cursos';
+
+const bg = require('../../../assets/bg.png');
+const logo = require('../../../assets/logo.png');
 
 const Signup = () => {
   const { createUser, loading } = useAuth();
   const navigation = useNavigation<StackTypes>();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [nome, setNome] = useState("");
-  const [matricula, setMatricula] = useState("");
-  const [idade, setIdade] = useState("");
-  const [anoAcademico, setAnoAcademico] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [nome, setNome] = useState('');
+  const [matricula, setMatricula] = useState('');
+  const [idade, setIdade] = useState('');
+  const [anoAcademico, setAnoAcademico] = useState('');
   const [anoAcademicoValue, setAnoAcademicoValue] = useState(1);
-  const [genero, setGenero] = useState("");
+  const [genero, setGenero] = useState('');
   const [generoValue, setGeneroValue] = useState(1);
-  const [curso, setCurso] = useState("");
-  const [cursoValue, setCursoValue] = useState("");
+  const [curso, setCurso] = useState('');
+  const [cursoValue, setCursoValue] = useState('');
   const [cursoIndex, setCursoIndex] = useState(0);
   const [toggleCurso, setToggleCurso] = useState(false);
   const [toggleGenero, setToggleGenero] = useState(false);
@@ -55,20 +59,20 @@ const Signup = () => {
   );
 
   useEffect(() => {
-    setGenero(generoValue === 1 ? "Masculino" : "Feminino");
+    setGenero(generoValue === 1 ? 'Masculino' : 'Feminino');
   }, [generoValue]);
 
   useEffect(() => {
     setAnoAcademico(
       anoAcademicoValue === 5
-        ? "quinto"
+        ? 'quinto'
         : anoAcademicoValue === 4
-        ? "quarto"
+        ? 'quarto'
         : anoAcademicoValue === 3
-        ? "terceiro"
+        ? 'terceiro'
         : anoAcademicoValue === 2
-        ? "segundo"
-        : "primeiro"
+        ? 'segundo'
+        : 'primeiro'
     );
   }, [anoAcademicoValue]);
 
@@ -89,43 +93,49 @@ const Signup = () => {
     }
   }, [cursosData, cursoIndex]);
 
-  if (cursosLoading) return <ActivityIndicator size="large" />;
+  if (cursosLoading) return <ActivityIndicator size='large' />;
 
   return (
-    <View>
+    <ImageBackground style={styles.Tela} source={bg} resizeMode='cover'>
+      <Text style={styles.title}>Criar conta</Text>
       <Input
         textValue={email}
-        placeholder="Email"
+        color='white'
+        placeholder='Email'
         onChangeText={(text) => setEmail(text)}
       />
       <Input
         textValue={password}
-        placeholder="Password"
+        color='white'
+        placeholder='Password'
         onChangeText={(text) => setPassword(text)}
       />
       <Input
         textValue={nome}
-        placeholder="Nome"
+        color='white'
+        placeholder='Nome'
         onChangeText={(text) => setNome(text)}
       />
       <Input
         textValue={matricula}
-        placeholder="Matricula"
+        color='white'
+        placeholder='Matricula'
         onChangeText={(text) => setMatricula(text)}
       />
       <PickerInput
+        color='white'
         textValue={anoAcademico}
-        placeholder="Ano Academico"
+        placeholder='Ano Academico'
         selectedValue={anoAcademicoValue}
         togglePicker={toggleAnoAcademico}
         setTogglePicker={setToggleAnoAcademico}
         onChangeText={(text) => setAnoAcademico(text)}
         items={[
-          { label: "1º ano", selectedValue: 1 },
-          { label: "2º ano", selectedValue: 2 },
-          { label: "3º ano", selectedValue: 3 },
-          { label: "4º ano", selectedValue: 4 },
-          { label: "5º ano", selectedValue: 5 },
+          { label: '1º ano', selectedValue: 1 },
+          { label: '2º ano', selectedValue: 2 },
+          { label: '3º ano', selectedValue: 3 },
+          { label: '4º ano', selectedValue: 4 },
+          { label: '5º ano', selectedValue: 5 },
         ]}
         onChange={(itemValue, itemIndex) => {
           setAnoAcademicoValue(itemValue), setToggleAnoAcademico(false);
@@ -133,27 +143,30 @@ const Signup = () => {
       />
       <Input
         textValue={idade}
-        placeholder="Idade"
+        placeholder='Idade'
+        color='white'
         onChangeText={(text) => setIdade(text)}
       />
       <PickerInput
+        color='white'
         textValue={genero}
-        placeholder="Genero"
+        placeholder='Genero'
         selectedValue={generoValue}
         togglePicker={toggleGenero}
         setTogglePicker={setToggleGenero}
         onChangeText={(text) => setGenero(text)}
         items={[
-          { label: "Feminino", selectedValue: 2 },
-          { label: "Masculino", selectedValue: 1 },
+          { label: 'Feminino', selectedValue: 2 },
+          { label: 'Masculino', selectedValue: 1 },
         ]}
         onChange={(itemValue, itemIndex) => {
           setGeneroValue(itemValue), setToggleGenero(false);
         }}
       />
       <PickerInput
+        color='white'
         textValue={curso}
-        placeholder="Cursos"
+        placeholder='Cursos'
         items={parsedCourses}
         togglePicker={toggleCurso}
         selectedValue={cursoIndex}
@@ -168,11 +181,11 @@ const Signup = () => {
         onPress={() => {
           try {
             createAluno().then(() => {
-              console.log("Aluno criado com sucesso", data.createAluno.nome);
+              console.log('Aluno criado com sucesso', data.createAluno.nome);
             });
             createUser(email, password);
           } catch (error) {
-            console.log("Erro ao criar aluno", error);
+            console.log('Erro ao criar aluno', error);
           }
         }}
       >
@@ -182,19 +195,19 @@ const Signup = () => {
           <Text style={styles.buttonText}>Criar conta</Text>
         )}
       </Pressable>
-      <Pressable onPress={() => navigation.navigate("Login")}>
+      <Pressable onPress={() => navigation.navigate('Login')}>
         <Text
           style={{
-            width: "100%",
-            textAlign: "center",
+            width: '100%',
+            textAlign: 'center',
             marginTop: scale(8),
-            color: "#FFC423",
+            color: '#FFC423',
           }}
         >
           Já tenho uma conta. Fazer login
         </Text>
       </Pressable>
-    </View>
+    </ImageBackground>
   );
 };
 
@@ -207,18 +220,29 @@ const styles = StyleSheet.create({
     paddingLeft: scale(12),
     borderWidth: 1,
     borderRadius: 12,
-    borderColor: "#C3C3C3",
+    borderColor: '#C3C3C3',
   },
   button: {
-    alignItems: "center",
-    backgroundColor: "#FFC423",
+    alignItems: 'center',
+    backgroundColor: '#FFC423',
     padding: 10,
     margin: 12,
     borderRadius: 12,
   },
+  title: {
+    fontSize: 30,
+    textAlign: 'center',
+    color: 'white',
+    marginBottom: 50,
+  },
   buttonText: {
-    color: "white",
+    color: 'white',
     margin: 12,
+  },
+  Tela: {
+    padding: 9,
+    paddingTop: 90,
+    flex: 1,
   },
   textAlign: {
     left: 14,
@@ -227,8 +251,8 @@ const styles = StyleSheet.create({
     margin: 12,
     // width: 366,
     // height: 50,
-    backgroundColor: "#E9E9E9",
-    borderColor: "blue",
+    backgroundColor: '#E9E9E9',
+    borderColor: 'blue',
     // borderWidth: 13
   },
 });
