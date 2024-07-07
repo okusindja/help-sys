@@ -3,6 +3,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 type StackNavigatorProps = {
   HomeStack: undefined;
+  "Adicionar dados": undefined;
   NotificationStack: undefined;
   UserStack: undefined;
   LoginStack: undefined;

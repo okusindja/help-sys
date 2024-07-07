@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderColor: '#C3C3C3',
     paddingLeft: 12,
+    color:"white"
   },
   title: {
     fontSize: 30,

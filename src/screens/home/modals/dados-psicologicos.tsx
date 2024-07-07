@@ -6,24 +6,26 @@ import { PickerOption, PickerToggles } from '../home.types'; // Ensure these typ
 import { Button } from 'react-native';
 
 interface DadosPsicologicosProps {
-  isVisible: boolean;
-  toggleVisibility: () => void;
   pickerOptions: { [key: string]: PickerOption[] };
 }
 
 const DadosPsicologicos: React.FC<DadosPsicologicosProps> = ({
-  isVisible,
-  toggleVisibility,
   pickerOptions,
 }) => {
   const [localState, setLocalState] = useState({
     pressaoText: 'Entre 80PA e 120PA',
     pressaoValue: 1,
     stressText: 'Não',
+    reticaoText: "Nao",
+    repeticaoValue: 1,
+    apoioEmocionalText: "Nao",
+    apoioEmocionalValue: 1,
     stressValue: 2,
     pickerToggles: {
       pressao: false,
       stress: false,
+      repeticao: false,
+      apoioEmocional: false,
     },
   });
 
@@ -37,13 +39,29 @@ const DadosPsicologicos: React.FC<DadosPsicologicosProps> = ({
       pickerToggles: { ...prev.pickerToggles, [picker]: false },
     }));
   };
-
+  
   return (
-    <InfoModal
-      isVisible={isVisible}
-      toggleVisibility={toggleVisibility}
-      title='Dados Psicologicos'
-    >
+    <>
+    <DataInput
+      label='Ja repetiu cadeiras'
+      value={localState.reticaoText}
+      items={pickerOptions.repeticao}
+      setValue={(value) =>
+        setLocalState((prev) => ({ ...prev, reticaoText: value }))
+      }
+      selectedValue={localState.repeticaoValue}
+      setSelectedValue={(value) => setPickerValue('repeticao', value)}
+      toggle={localState.pickerToggles.repeticao}
+      setToggle={() =>
+        setLocalState((prev) => ({
+          ...prev,
+          pickerToggles: {
+            ...prev.pickerToggles,
+            repeticao: !prev.pickerToggles.repeticao,
+          },
+        }))
+      }
+    />
       <DataInput
         label='Pressão'
         value={localState.pressaoText}
@@ -84,8 +102,27 @@ const DadosPsicologicos: React.FC<DadosPsicologicosProps> = ({
           }))
         }
       />
-      <Button title='Salvar' onPress={toggleVisibility} />
-    </InfoModal>
+      <DataInput
+        label='Apoio emocional'
+        value={localState.stressText}
+        items={pickerOptions.stress}
+        setValue={(value) =>
+          setLocalState((prev) => ({ ...prev, stressText: value }))
+        }
+        selectedValue={localState.stressValue}
+        setSelectedValue={(value) => setPickerValue('stress', value)}
+        toggle={localState.pickerToggles.stress}
+        setToggle={() =>
+          setLocalState((prev) => ({
+            ...prev,
+            pickerToggles: {
+              ...prev.pickerToggles,
+              stress: !prev.pickerToggles.stress,
+            },
+          }))
+        }
+      />
+      </>
   );
 };
 

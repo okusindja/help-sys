@@ -7,8 +7,11 @@ export interface PickerToggles {
   pressao: boolean;
   stress: boolean;
   emprego: boolean;
+  repeticao: boolean;
+  apoioEmocional: boolean;
   financa: boolean;
   apoio: boolean;
+  dificuldadeFinanceira: boolean;
   dificult: boolean;
   distancia: boolean;
 }

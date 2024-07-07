@@ -21,6 +21,7 @@ const bg = require('../../../assets/bg.png');
 const logo = require('../../../assets/logo.png');
 
 const Signup = () => {
+  
   const { createUser, loading } = useAuth();
   const navigation = useNavigation<StackTypes>();
   const [email, setEmail] = useState('');

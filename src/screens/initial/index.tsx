@@ -16,6 +16,7 @@ const logo = require('../../../assets/logo.png');
 
 const Initial = () => {
   const navigation = useNavigation<StackTypes>();
+  
   return (
     <ImageBackground source={bg} style={styles.container} resizeMode='cover'>
       <Image source={logo} />

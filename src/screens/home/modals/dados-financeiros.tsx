@@ -6,24 +6,23 @@ import { PickerOption, PickerToggles } from '../home.types';
 import { Button } from 'react-native';
 
 interface DadosFinanceirosProps {
-  isVisible: boolean;
-  toggleVisibility: () => void;
   pickerOptions: { [key: string]: PickerOption[] };
 }
 
 const DadosFinanceiros: React.FC<DadosFinanceirosProps> = ({
-  isVisible,
-  toggleVisibility,
   pickerOptions,
 }) => {
   const [localState, setLocalState] = useState({
     empregoText: 'Não',
     empregoValue: 2,
     financaText: 'Não',
+    dificuldadeFinaceiraText: 'Não',
+    dificuldadeValue: 2,
     financaValue: 2,
     pickerToggles: {
       emprego: false,
       financa: false,
+      dificuldadeFinanceira: false,
     },
   });
 
@@ -39,31 +38,7 @@ const DadosFinanceiros: React.FC<DadosFinanceirosProps> = ({
   };
 
   return (
-    <InfoModal
-      isVisible={isVisible}
-      toggleVisibility={toggleVisibility}
-      title='Dados Financeiros'
-    >
-      <DataInput
-        label='Emprego'
-        value={localState.empregoText}
-        items={pickerOptions.emprego}
-        setValue={(value) =>
-          setLocalState((prev) => ({ ...prev, empregoText: value }))
-        }
-        selectedValue={localState.empregoValue}
-        setSelectedValue={(value) => setPickerValue('emprego', value)}
-        toggle={localState.pickerToggles.emprego}
-        setToggle={() =>
-          setLocalState((prev) => ({
-            ...prev,
-            pickerToggles: {
-              ...prev.pickerToggles,
-              emprego: !prev.pickerToggles.emprego,
-            },
-          }))
-        }
-      />
+<>
       <DataInput
         label='Apoio Financeiro'
         value={localState.financaText}
@@ -84,8 +59,47 @@ const DadosFinanceiros: React.FC<DadosFinanceirosProps> = ({
           }))
         }
       />
-      <Button title='Salvar' onPress={toggleVisibility} />
-    </InfoModal>
+      <DataInput
+        label='Dificuldade Financeira'
+        value={localState.dificuldadeFinaceiraText}
+        items={pickerOptions.dificuldadeFinanceira}
+        setValue={(value) =>
+          setLocalState((prev) => ({ ...prev, dificuldadeFinaceiraText: value }))
+        }
+        selectedValue={localState.dificuldadeValue}
+        setSelectedValue={(value) => setPickerValue('dificuldadeFinanceira', value)}
+        toggle={localState.pickerToggles.dificuldadeFinanceira}
+        setToggle={() =>
+          setLocalState((prev) => ({
+            ...prev,
+            pickerToggles: {
+              ...prev.pickerToggles,
+              dificuldadeFinanceira: !prev.pickerToggles.dificuldadeFinanceira,
+            },
+          }))
+        }
+      />
+      <DataInput
+        label='Emprego'
+        value={localState.empregoText}
+        items={pickerOptions.emprego}
+        setValue={(value) =>
+          setLocalState((prev) => ({ ...prev, empregoText: value }))
+        }
+        selectedValue={localState.empregoValue}
+        setSelectedValue={(value) => setPickerValue('emprego', value)}
+        toggle={localState.pickerToggles.emprego}
+        setToggle={() =>
+          setLocalState((prev) => ({
+            ...prev,
+            pickerToggles: {
+              ...prev.pickerToggles,
+              emprego: !prev.pickerToggles.emprego,
+            },
+          }))
+        }
+      />
+</>
   );
 };
 

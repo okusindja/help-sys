@@ -6,14 +6,10 @@ import { PickerOption, PickerToggles } from '../home.types';
 import { Button } from 'react-native';
 
 interface DadosSociaisProps {
-  isVisible: boolean;
-  toggleVisibility: () => void;
   pickerOptions: { [key: string]: PickerOption[] };
 }
 
 const DadosSociais: React.FC<DadosSociaisProps> = ({
-  isVisible,
-  toggleVisibility,
   pickerOptions,
 }) => {
   const [localState, setLocalState] = useState({
@@ -36,13 +32,9 @@ const DadosSociais: React.FC<DadosSociaisProps> = ({
   };
 
   return (
-    <InfoModal
-      isVisible={isVisible}
-      toggleVisibility={toggleVisibility}
-      title='Dados Sociais'
-    >
+<>
       <DataInput
-        label='Distância'
+        label='Distância de morada'
         value={localState.distanciaText}
         items={pickerOptions.distancia}
         setValue={(value) =>
@@ -61,8 +53,7 @@ const DadosSociais: React.FC<DadosSociaisProps> = ({
           }))
         }
       />
-      <Button title='Salvar' onPress={toggleVisibility} />
-    </InfoModal>
+</>
   );
 };
 
