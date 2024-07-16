@@ -14,12 +14,12 @@ const DadosPsicologicos: React.FC<DadosPsicologicosProps> = ({
 }) => {
   const [localState, setLocalState] = useState({
     pressaoText: 'Entre 80PA e 120PA',
-    pressaoValue: 1,
+    pressaoValue: 2,
     stressText: 'Não',
-    reticaoText: "Nao",
-    repeticaoValue: 1,
-    apoioEmocionalText: "Nao",
-    apoioEmocionalValue: 1,
+    repeticaoText: 'Não',
+    repeticaoValue: 2,
+    apoioEmocionalText: 'Não',
+    apoioEmocionalValue: 2,
     stressValue: 2,
     pickerToggles: {
       pressao: false,
@@ -39,29 +39,29 @@ const DadosPsicologicos: React.FC<DadosPsicologicosProps> = ({
       pickerToggles: { ...prev.pickerToggles, [picker]: false },
     }));
   };
-  
+
   return (
     <>
-    <DataInput
-      label='Ja repetiu cadeiras'
-      value={localState.reticaoText}
-      items={pickerOptions.repeticao}
-      setValue={(value) =>
-        setLocalState((prev) => ({ ...prev, reticaoText: value }))
-      }
-      selectedValue={localState.repeticaoValue}
-      setSelectedValue={(value) => setPickerValue('repeticao', value)}
-      toggle={localState.pickerToggles.repeticao}
-      setToggle={() =>
-        setLocalState((prev) => ({
-          ...prev,
-          pickerToggles: {
-            ...prev.pickerToggles,
-            repeticao: !prev.pickerToggles.repeticao,
-          },
-        }))
-      }
-    />
+      <DataInput
+        label='Ja repetiu cadeiras'
+        value={localState.repeticaoText}
+        items={pickerOptions.repeticao}
+        setValue={(value) =>
+          setLocalState((prev) => ({ ...prev, repeticaoText: value }))
+        }
+        selectedValue={localState.repeticaoValue}
+        setSelectedValue={(value) => setPickerValue('repeticao', value)}
+        toggle={localState.pickerToggles.repeticao}
+        setToggle={() =>
+          setLocalState((prev) => ({
+            ...prev,
+            pickerToggles: {
+              ...prev.pickerToggles,
+              repeticao: !prev.pickerToggles.repeticao,
+            },
+          }))
+        }
+      />
       <DataInput
         label='Pressão'
         value={localState.pressaoText}
@@ -104,25 +104,25 @@ const DadosPsicologicos: React.FC<DadosPsicologicosProps> = ({
       />
       <DataInput
         label='Apoio emocional'
-        value={localState.stressText}
-        items={pickerOptions.stress}
+        value={localState.apoioEmocionalText}
+        items={pickerOptions.apoioEmocional}
         setValue={(value) =>
-          setLocalState((prev) => ({ ...prev, stressText: value }))
+          setLocalState((prev) => ({ ...prev, apoioEmocionalText: value }))
         }
-        selectedValue={localState.stressValue}
-        setSelectedValue={(value) => setPickerValue('stress', value)}
-        toggle={localState.pickerToggles.stress}
+        selectedValue={localState.apoioEmocionalValue}
+        setSelectedValue={(value) => setPickerValue('apoioEmocional', value)}
+        toggle={localState.pickerToggles.apoioEmocional}
         setToggle={() =>
           setLocalState((prev) => ({
             ...prev,
             pickerToggles: {
               ...prev.pickerToggles,
-              stress: !prev.pickerToggles.stress,
+              apoioEmocional: !prev.pickerToggles.apoioEmocional,
             },
           }))
         }
       />
-      </>
+    </>
   );
 };
 
