@@ -1,6 +1,7 @@
 import {
   View,
   Text,
+  ScrollView,
   Pressable,
   StyleSheet,
   ActivityIndicator,
@@ -9,19 +10,28 @@ import {
 import React, { useEffect, useState } from 'react';
 import useAuth from '../../hooks/use-auth';
 import { useNavigation } from '@react-navigation/native';
-import { useMutation, useQuery } from '@apollo/client';
-import { CREATE_ALUNO } from '../../graphql/aluno';
 import { StackTypes } from '../../routes/routes.types';
 import { scale } from 'react-native-size-matters';
 import Input from '../../components/input';
 import PickerInput from '../../components/picker-input';
-import { GET_COURSES } from '../../graphql/cursos';
+import { useQuery, useMutation } from 'react-query';
+import endpoints from '../../api/endpoints';
+import { CURSOS } from '../../constants';
+import { useForm, Controller } from "react-hook-form"
+import axios from 'axios';
+
 
 const bg = require('../../../assets/bg.png');
 const logo = require('../../../assets/logo.png');
 
 const Signup = () => {
+
+
+
   
+
+
+
   const { createUser, loading } = useAuth();
   const navigation = useNavigation<StackTypes>();
   const [email, setEmail] = useState('');
@@ -30,12 +40,12 @@ const Signup = () => {
   const [matricula, setMatricula] = useState('');
   const [idade, setIdade] = useState('');
   const [anoAcademico, setAnoAcademico] = useState('');
-  const [anoAcademicoValue, setAnoAcademicoValue] = useState(1);
-  const [genero, setGenero] = useState('');
-  const [generoValue, setGeneroValue] = useState(1);
+  const [anoCurricular, setAnoAcademicoValue] = useState(1);
+  const [generoLabel, setGenero] = useState('');
+  const [genero, setGeneroValue] = useState(0);
   const [curso, setCurso] = useState('');
   const [cursoValue, setCursoValue] = useState('');
-  const [cursoIndex, setCursoIndex] = useState(0);
+  const [cursoId, setCursoIndex] = useState(0);
   const [toggleCurso, setToggleCurso] = useState(false);
   const [toggleGenero, setToggleGenero] = useState(false);
   const [toggleAnoAcademico, setToggleAnoAcademico] = useState(false);
@@ -43,62 +53,80 @@ const Signup = () => {
   const matriculaNum = parseInt(matricula, 10);
   const idadeNum = parseInt(idade, 10);
 
-  const { data: cursosData, loading: cursosLoading } = useQuery(GET_COURSES);
-  const [createAluno, { data, loading: createAlunoLoading }] = useMutation(
-    CREATE_ALUNO,
-    {
-      variables: {
-        nome: nome,
-        email: email,
-        genero: genero,
-        idade: idadeNum,
-        ano: anoAcademico,
-        idCurso: cursoValue,
-        matricula: matriculaNum,
-      },
+  const { data: cursosData, isLoading: cursosLoading, isError: cursosIsError, error: cursosError } = useQuery(
+    ["getAllCursos"],
+    () => endpoints.getAllCursos());
+
+
+
+const handleSubmit = async () =>{
+  try{
+      const response = await endpoints.createAluno({
+          nome,
+        matricula: Number(matricula),
+        email,
+        idade: Number(idade),
+        genero: Boolean(genero),
+        anoCurricular: Number(anoCurricular),
+        cursoId:Number(cursoId) ,
+      },).then(
+        ()=>{
+          alert('Cadastrado com sucesso!')
+        }
+      ) ;
+      
+    }catch{
+      
     }
-  );
+
+}
+
+
 
   useEffect(() => {
-    setGenero(generoValue === 1 ? 'Masculino' : 'Feminino');
-  }, [generoValue]);
+    setGenero(genero === 1 ? 'Masculino' : 'Feminino');
+  }, [genero]);
 
   useEffect(() => {
     setAnoAcademico(
-      anoAcademicoValue === 5
+      anoCurricular === 5
         ? 'quinto'
-        : anoAcademicoValue === 4
+        : anoCurricular === 4
         ? 'quarto'
-        : anoAcademicoValue === 3
+        : anoCurricular === 3
         ? 'terceiro'
-        : anoAcademicoValue === 2
+        : anoCurricular === 2
         ? 'segundo'
         : 'primeiro'
     );
-  }, [anoAcademicoValue]);
+  }, [anoCurricular]);
 
-  const parsedCourses = cursosData?.cursos.map(
-    (curso: { id: string; nome: string }) => ({
+// TODO: TUDO QUE TIVER O ARRAY "CURSOS", SUBSTITUIR POR "cousesData" como comoentado acima, ou pelo data que retorna o array da query
+
+  const parsedCourses = cursosData.map(
+    (curso: { id: number; titulo: string }) => ({
       value: curso.id,
-      label: curso.nome,
+      label: curso.titulo,
     })
   );
 
   useEffect(() => {
     if (cursosData) {
-      if (cursoIndex >= 0 && cursoIndex < parsedCourses.length) {
-        const selectedCurso = parsedCourses[cursoIndex];
-        setCurso(selectedCurso.label);
-        setCursoValue(selectedCurso.value);
+      if (cursoId >= 0 && cursoId < parsedCourses.length) {
+        const selectedCurso = parsedCourses[cursoId];
+        setCurso(selectedCurso.titulo);
+        setCursoValue(selectedCurso.id);
       }
     }
-  }, [cursosData, cursoIndex]);
+  }, [cursosData, cursoId]);
 
-  if (cursosLoading) return <ActivityIndicator size='large' />;
+  // if (cursosLoading) return <ActivityIndicator size='large' />;
 
   return (
     <ImageBackground style={styles.Tela} source={bg} resizeMode='cover'>
+      <ScrollView>
       <Text style={styles.title}>Criar conta</Text>
+
       <Input
         textValue={email}
         color='white'
@@ -127,7 +155,7 @@ const Signup = () => {
         color='white'
         textValue={anoAcademico}
         placeholder='Ano Academico'
-        selectedValue={anoAcademicoValue}
+        selectedValue={anoCurricular}
         togglePicker={toggleAnoAcademico}
         setTogglePicker={setToggleAnoAcademico}
         onChangeText={(text) => setAnoAcademico(text)}
@@ -150,14 +178,14 @@ const Signup = () => {
       />
       <PickerInput
         color='white'
-        textValue={genero}
+        textValue={generoLabel}
         placeholder='Genero'
-        selectedValue={generoValue}
+        selectedValue={genero}
         togglePicker={toggleGenero}
         setTogglePicker={setToggleGenero}
         onChangeText={(text) => setGenero(text)}
         items={[
-          { label: 'Feminino', selectedValue: 2 },
+          { label: 'Feminino', selectedValue: 0 },
           { label: 'Masculino', selectedValue: 1 },
         ]}
         onChange={(itemValue, itemIndex) => {
@@ -170,7 +198,7 @@ const Signup = () => {
         placeholder='Cursos'
         items={parsedCourses}
         togglePicker={toggleCurso}
-        selectedValue={cursoIndex}
+        selectedValue={cursoId}
         setTogglePicker={setToggleCurso}
         onChangeText={(text) => setCurso(text)}
         onChange={(itemValue, itemIndex) => {
@@ -179,16 +207,17 @@ const Signup = () => {
       />
       <Pressable
         style={styles.button}
-        onPress={() => {
-          try {
-            createAluno().then(() => {
-              console.log('Aluno criado com sucesso', data.createAluno.nome);
-            });
-            createUser(email, password);
-          } catch (error) {
-            console.log('Erro ao criar aluno', error);
-          }
-        }}
+        // onPress={() => {
+        //   try {
+        //     createAluno().then(() => {
+        //       console.log('Aluno criado com sucesso', data.createAluno.nome);
+        //     });
+        //     createUser(email, password);
+        //   } catch (error) {
+        //     console.log('Erro ao criar aluno', error);
+        //   }
+        // }}
+        onPress={handleSubmit}
       >
         {loading && createAlunoLoading ? (
           <ActivityIndicator />
@@ -208,6 +237,7 @@ const Signup = () => {
           Já tenho uma conta. Fazer login
         </Text>
       </Pressable>
+      </ScrollView>
     </ImageBackground>
   );
 };

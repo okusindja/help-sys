@@ -8,6 +8,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { InitialScreen } from './src/screens';
 import React from 'react';
+import { QueryClient, QueryClientProvider } from "react-query";
+
+
+const cliente=new QueryClient();
 
 const client = new ApolloClient({
   uri: 'https://api-us-east-1-shared-usea1-02.hygraph.com/v2/clu9y3rbx042907w7jphaef00/master',
@@ -22,15 +26,18 @@ const App = () => {
   const { user, token } = useAuth();
 
   return (
-    <ApolloProvider client={client}>
-      <ThemeProvider theme={theme}>
-        <PaperProvider theme={navigationTheme}>
-          <NavigationContainer>
-            {user && token ? <BottomTabs /> : <LoginStack />}
-          </NavigationContainer>
-        </PaperProvider>
-      </ThemeProvider>
-    </ApolloProvider>
+  <QueryClientProvider client={cliente}>
+      <ApolloProvider client={client}>
+        <ThemeProvider theme={theme}>
+          <PaperProvider theme={navigationTheme}>
+            <NavigationContainer>
+              {user && token ? <BottomTabs /> : <LoginStack />}
+            </NavigationContainer>
+          </PaperProvider>
+        </ThemeProvider>
+      </ApolloProvider>
+    </QueryClientProvider>
+
   );
 };
 
